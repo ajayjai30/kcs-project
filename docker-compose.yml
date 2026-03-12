@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # 1. The Vector Database
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: kcs_qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - rag_network
+
+  # 2. The CPU-Optimized Embedding Engine
+  ollama:
+    image: ollama/ollama:latest
+    container_name: kcs_ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - rag_network
+    # Automatically pulls the nomic model on startup
+    command: >
+      bash -c "ollama serve & sleep 5 && ollama pull nomic-embed-text:v1.5 && wait"
+
+  # 3. Background Sparse Vector API (Flask)
+  reindex-api:
+    build: 
+      context: .
+      dockerfile: Dockerfile.reindexer
+    container_name: kcs_reindexer
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - QDRANT_URL=http://qdrant:6333
+    networks:
+      - rag_network
+    depends_on:
+      - qdrant
+
+  # 4. The Main RAG App (LangGraph / Agent)
+  rag-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    container_name: kcs_rag_app
+    restart: unless-stopped
+    ports:
+      - "7860:7860" # Gradio Default Port
+    environment:
+      - NVIDIA_API_KEY=${NVIDIA_API_KEY}
+    volumes:
+      # Persist the SQL database and Markdown summaries to the host machine
+      - chat_memory_data:/app/chat_memory.sqlite 
+      - ./session_summaries:/app/session_summaries
+    networks:
+      - rag_network
+    depends_on:
+      - qdrant
+      - ollama
+
+networks:
+  rag_network:
+    driver: bridge
+
+volumes:
+  qdrant_data:
+  ollama_data:
+  chat_memory_data:

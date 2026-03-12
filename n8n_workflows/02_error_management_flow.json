@@ -1,0 +1,215 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "6b5522f3-8555-4669-bbf6-6fe5d230a1cb",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -720,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.error_type}}",
+                    "rightValue": "FILE_ERROR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "dcfc1453-0e39-462e-a9ec-1a96d947203c"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "HR_ERROR_SEGREGATION"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "ed91e871-59bc-4f93-aeec-5e7d17e30ec8",
+                    "leftValue": "={{ $json.error_type }}",
+                    "rightValue": "SYSTEM_ERROR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "DEVELOPER_ERROR_SEGREGATION"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -304,
+        208
+      ],
+      "id": "d7381738-a6fa-42cd-b08a-15cccd50f8c2",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "text": "=🚨 *HR Alert: Document Ingestion Failed* 🚨\n\nThe AI database could not read an uploaded document.\n\n*File:* {{$json.failed_file}}\n\n*Issue:* {{$json.reason}}\n\nPlease check the file in the shared directory.",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        32,
+        -80
+      ],
+      "id": "d75abf0b-0394-475c-9635-aa4107c508ce",
+      "name": "HR ERROR MESSAGE SENDER-SLACK",
+      "webhookId": "7690478c-9c53-40d4-870c-a0be95376c76"
+    },
+    {
+      "parameters": {
+        "subject": "Regarding the File Processing By n8n",
+        "html": "=Hi HR Team,<br><br>\n\nThe vector database could not process a newly uploaded file.<br><br>\n\n<b>File Name:</b> {{$json.failed_file}}<br>\n<b>Reason:</b> {{$json.reason}}<br><br>\n<b>Link:</b> <a href=\"file:///{{$json.file_path}}\">{{$json.file_path}}</a><br><br>\n\nPlease verify if the file is corrupted or password-protected, and re-upload it.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        32,
+        96
+      ],
+      "id": "2554c9b7-dfeb-4dd4-b84d-b467fca11acb",
+      "name": "HR EMAIL SENDER(BUT NEED TO BE CHANGED WITH GMAIL WITH SAME MSG)",
+      "webhookId": "0a43b962-db96-4ffe-b041-a068759e06fc"
+    },
+    {
+      "parameters": {
+        "fromEmail": "ajay.j.it@assokcs.org",
+        "toEmail": "ajay.jaikrishnan@gmail.com",
+        "subject": "Regarding the File Processing By n8n",
+        "html": "=`Hi HR Team,<br><br>\n\nThe vector database could not process a newly uploaded file.<br><br>\n\n<b>File Name:</b> {{$json.failed_file}}<br>\n<b>Reason:</b> {{$json.reason}}<br><br>\n\nPlease verify if the file is corrupted or password-protected, and re-upload it.`",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        32,
+        496
+      ],
+      "id": "0134df64-14fa-428c-912d-e7076b17b8ea",
+      "name": "DEVELOPER MAIL(NEED TO CHANGE WITH GMAIL WITH SAME MSG)",
+      "webhookId": "0a43b962-db96-4ffe-b041-a068759e06fc"
+    },
+    {
+      "parameters": {
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        32,
+        304
+      ],
+      "id": "6f48ccfc-442d-4b01-bb2b-77f0caf327e4",
+      "name": "DEVELOPER MSG SENDER",
+      "webhookId": "53c70a01-ef97-4060-9c52-161a5fa829f9"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.all()[0];\n\nlet fileName = \"Unknown File\";\nlet errorMessage = \"Unknown Error\";\nlet errorType = \"FILE_ERROR\"; // Default to Dev Team\nlet nodeName = \"Unknown Node\";\nlet filePath = \"Path not available\"; // <--- ADDED THIS\n\n// Scenario 1: Native n8n Node Error (Code/Pipeline crashed)\nif (item.json.error && typeof item.json.error === 'object' && item.json.error.message) {\n    errorMessage = item.json.error.message;\n    errorType = \"SYSTEM_ERROR\"; \n    \n    // n8n often embeds the node name in the error object\n    if (item.json.error.node && item.json.error.node.name) {\n        nodeName = item.json.error.node.name;\n    }\n\n    // Try to salvage filename and path\n    if (item.binary && item.binary.data && item.binary.data.fileName) {\n        fileName = item.binary.data.fileName;\n    } else if (item.json.fileName) {\n        fileName = item.json.fileName;\n    }\n    \n    // <--- ADDED THIS TO CATCH PATH --->\n    if (item.json.path) filePath = item.json.path;\n    \n} \n// Scenario 2: Custom Pipeline Error (File is corrupt/unreadable)\nelse if (item.json.error && typeof item.json.error === 'string') {\n    errorMessage = item.json.error;\n    errorType = \"FILE_ERROR\";\n    fileName = item.json.fileName || \"Unknown File\";\n    filePath = item.json.path || \"Path not available\"; // <--- ADDED THIS\n    nodeName = \"HASH GENERATOR (Read Error)\";\n}\n\nreturn {\n    json: {\n        error_type: errorType,\n        failed_file: fileName,\n        file_path: filePath, // <--- ADDED THIS TO THE OUTPUT\n        reason: errorMessage,\n        node_name: nodeName,\n        timestamp: new Date().toISOString()\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -512,
+        208
+      ],
+      "id": "44c14c11-802e-4cf0-b837-a2a87f406cf0",
+      "name": "error splitter node"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "error splitter node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "HR EMAIL SENDER(BUT NEED TO BE CHANGED WITH GMAIL WITH SAME MSG)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HR ERROR MESSAGE SENDER-SLACK",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "DEVELOPER MAIL(NEED TO CHANGE WITH GMAIL WITH SAME MSG)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "DEVELOPER MSG SENDER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "error splitter node": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "9fbca758ae00ac6023e7e6cc28587d5e73e94aa33801e34908dbb8d2c733d8a0"
+  }
+}

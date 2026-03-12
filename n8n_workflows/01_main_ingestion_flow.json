@@ -1,0 +1,1706 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -7104,
+        2064
+      ],
+      "id": "bc3e475c-dddb-4556-ab2f-a0c0035d3584",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "62766426-7f14-49a7-ac19-96a2f76d648d",
+              "name": "VOLUNTEER_FILES",
+              "value": "C:\\Users\\ajayj\\.n8n-files\\kcs-pos\\kcs-pos\\volunteer_files\\*",
+              "type": "string"
+            },
+            {
+              "id": "373a54a6-6958-46fe-be0f-78b45a0e711f",
+              "name": "EMPLOYEE_FILES",
+              "value": "C:\\Users\\ajayj\\.n8n-files\\kcs-pos\\kcs-pos\\employee_files\\*",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -6880,
+        2064
+      ],
+      "id": "30740759-7deb-4698-baad-6a10cc2882f5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -6208,
+        2064
+      ],
+      "id": "3c900513-8c73-4787-a4ba-4ae1f43b4379",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('MOVE BINARY DATA').item.json.security_level }}",
+                    "rightValue": "volunteer",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "bb489f2b-40e7-4e55-a171-e9894ab24f81"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "VOLUNTEER FILES ROUTER"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "cce49410-a70c-42dc-9cf4-d51bc09c982c",
+                    "leftValue": "={{ $('MOVE BINARY DATA').item.json.security_level }}",
+                    "rightValue": "employee",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "EMPLOYEE FILES ROUTER"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -3776,
+        1984
+      ],
+      "id": "b7b08657-d903-4705-b030-8ebf1587a38f",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "54c3ab77-2855-49f5-bd76-20152329e9bf",
+              "name": "security_level",
+              "value": "volunteer",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2432,
+        1472
+      ],
+      "id": "c9008d9d-b7eb-455c-9ea5-49d3aa39b354",
+      "name": "SET FILE ACCESS CONTROL-VOLUNTEER"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2880,
+        1536
+      ],
+      "id": "deea7e17-0851-46cf-9758-19a125b80dbf",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $json.VOLUNTEER_FILES }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        -6656,
+        1968
+      ],
+      "id": "7fbd6e6f-d22e-4319-a1c3-9cef160558e1",
+      "name": "VOLUNTEER FILES READER"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $json.EMPLOYEE_FILES }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        -6656,
+        2160
+      ],
+      "id": "de48876a-127f-42af-990a-617cac8b3b8c",
+      "name": "EMPLOYEE FILES READER"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "890dd01f-c025-41fc-92cb-b4a3c8d3a9c3",
+              "name": "security_level",
+              "value": "volunteer",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -6432,
+        1968
+      ],
+      "id": "19a8bf5b-0567-4f04-a617-5d509ed2add6",
+      "name": "VOLUNTEER TAGGING",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "890dd01f-c025-41fc-92cb-b4a3c8d3a9c3",
+              "name": "security_level",
+              "value": "employee",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -6432,
+        2160
+      ],
+      "id": "b3dd0ba0-0511-4062-be0b-85a31aa3c1e5",
+      "name": "EMPLOYEE TAGGER",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2880,
+        2112
+      ],
+      "id": "ed003ff0-4416-4897-a85b-5948f8e44de1",
+      "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -3328,
+        2128
+      ],
+      "id": "e44d049d-5070-4672-916d-3aa41db5b8cf",
+      "name": "EMPLOYEE FILE TEXT EXTRACTOR(PDF)",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "destinationKey": "=text",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -3328,
+        2432
+      ],
+      "id": "43d88401-e67f-46f8-9894-2f62057c21f8",
+      "name": "EMPLOYEE FILE TEXT EXTRACTOR(MARKDOWN)",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allChunks = [];\nconst chunkSize = 1000;\nconst overlap = 200; // <--- ADD THIS: The number of characters to overlap\n\n// Just get the data currently inside this node\nconst items = $input.all();\n\nfor (let i = 0; i < items.length; i++) {\n    const text = items[i].json.text;\n    \n    // Grab the Hash and FileName directly from the current item\n    const fileHash = items[i].json.file_hash;\n    const fileName = items[i].json.fileName;\n\n    if (!text) continue;\n    \n    // THE MAGIC MATH: Advance the loop by (1000 - 200) = 800 characters each time\n    const step = chunkSize - overlap; \n    \n    for (let j = 0; j < text.length; j += step) {\n        allChunks.push({\n            json: {\n                text: text.substring(j, j + chunkSize),\n                file_hash: fileHash,\n                fileName: fileName  // Stamped perfectly onto every chunk\n            },\n            pairedItem: { item: i } \n        });\n    }\n}\n\nreturn allChunks;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3104,
+        2112
+      ],
+      "id": "d2ce683d-d081-402f-9b23-d020a2e270c6",
+      "name": "CODE FOR CHUNKING-EMPLOYEE"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('MOVE BINARY DATA').item.json.fileExtension }}",
+                    "rightValue": "pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "bb489f2b-40e7-4e55-a171-e9894ab24f81"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PDF ROUTER(VOLUNTEER)"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "cce49410-a70c-42dc-9cf4-d51bc09c982c",
+                    "leftValue": "={{ $('MOVE BINARY DATA').item.json.fileExtension }}",
+                    "rightValue": "=^(md|txt)$",
+                    "operator": {
+                      "type": "string",
+                      "operation": "regex"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "MARKDOWN ROUTER(VOLUNTEER)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -3552,
+        1696
+      ],
+      "id": "adaf4121-361c-45f7-aad7-b62ead2a3b04",
+      "name": "VOLUNTEER FILE SEGREGATION"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2880,
+        2416
+      ],
+      "id": "533e1654-5a89-4e40-b268-ff346eeae77f",
+      "name": "Loop Over Items3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "54c3ab77-2855-49f5-bd76-20152329e9bf",
+              "name": "security_level",
+              "value": "volunteer",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2432,
+        1760
+      ],
+      "id": "df694ff8-ef98-4d56-ad19-7524a0c2e9d3",
+      "name": "SET FILE ACCESS CONTROL-VOLUNTEER3"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2880,
+        1824
+      ],
+      "id": "256b1ead-aba2-4a99-b188-de393f435e67",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allChunks = [];\nconst chunkSize = 1000;\nconst overlap = 200; // <--- ADD THIS: The number of characters to overlap\n\n// Just get the data currently inside this node\nconst items = $input.all();\n\nfor (let i = 0; i < items.length; i++) {\n    const text = items[i].json.text;\n    \n    // Grab the Hash and FileName directly from the current item\n    const fileHash = items[i].json.file_hash;\n    const fileName = items[i].json.fileName;\n\n    if (!text) continue;\n    \n    // THE MAGIC MATH: Advance the loop by (1000 - 200) = 800 characters each time\n    const step = chunkSize - overlap; \n    \n    for (let j = 0; j < text.length; j += step) {\n        allChunks.push({\n            json: {\n                text: text.substring(j, j + chunkSize),\n                file_hash: fileHash,\n                fileName: fileName  // Stamped perfectly onto every chunk\n            },\n            pairedItem: { item: i } \n        });\n    }\n}\n\nreturn allChunks;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3104,
+        1824
+      ],
+      "id": "4f53c956-735b-4967-808b-2082e5588178",
+      "name": "CODE FOR CHUNKING-VOLUNTEER(markdown)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allChunks = [];\nconst chunkSize = 1000;\nconst overlap = 200; // <--- ADD THIS: The number of characters to overlap\n\n// Just get the data currently inside this node\nconst items = $input.all();\n\nfor (let i = 0; i < items.length; i++) {\n    const text = items[i].json.text;\n    \n    // Grab the Hash and FileName directly from the current item\n    const fileHash = items[i].json.file_hash;\n    const fileName = items[i].json.fileName;\n\n    if (!text) continue;\n    \n    // THE MAGIC MATH: Advance the loop by (1000 - 200) = 800 characters each time\n    const step = chunkSize - overlap; \n    \n    for (let j = 0; j < text.length; j += step) {\n        allChunks.push({\n            json: {\n                text: text.substring(j, j + chunkSize),\n                file_hash: fileHash,\n                fileName: fileName  // Stamped perfectly onto every chunk\n            },\n            pairedItem: { item: i } \n        });\n    }\n}\n\nreturn allChunks;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3104,
+        1536
+      ],
+      "id": "2bc8b0be-a3c3-4678-8711-8ef413e0abbe",
+      "name": "CODE FOR CHUNKING-VOLUNTEER(pdf)"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "destinationKey": "=text",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -3328,
+        1840
+      ],
+      "id": "c57c0853-3c4a-49f3-869f-e06fac7923fa",
+      "name": "VOLUNTEER FILES EXTRACTOR(markdown)",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('MOVE BINARY DATA').item.json.fileExtension }}",
+                    "rightValue": "pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "bb489f2b-40e7-4e55-a171-e9894ab24f81"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PDF ROUTER(EMPLOYEE)"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "cce49410-a70c-42dc-9cf4-d51bc09c982c",
+                    "leftValue": "={{ $('MOVE BINARY DATA').item.json.fileExtension }}",
+                    "rightValue": "=^(md|txt)$",
+                    "operator": {
+                      "type": "string",
+                      "operation": "regex"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "MARKDOWN ROUTER (EMPLOYEE)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -3552,
+        2288
+      ],
+      "id": "45012727-67c4-4077-ba5c-386abb0ff773",
+      "name": "EMPLOYEE FILE SEGREGATION"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allChunks = [];\nconst chunkSize = 1000;\nconst overlap = 200; // <--- ADD THIS: The number of characters to overlap\n\n// Just get the data currently inside this node\nconst items = $input.all();\n\nfor (let i = 0; i < items.length; i++) {\n    const text = items[i].json.text;\n    \n    // Grab the Hash and FileName directly from the current item\n    const fileHash = items[i].json.file_hash;\n    const fileName = items[i].json.fileName;\n\n    if (!text) continue;\n    \n    // THE MAGIC MATH: Advance the loop by (1000 - 200) = 800 characters each time\n    const step = chunkSize - overlap; \n    \n    for (let j = 0; j < text.length; j += step) {\n        allChunks.push({\n            json: {\n                text: text.substring(j, j + chunkSize),\n                file_hash: fileHash,\n                fileName: fileName  // Stamped perfectly onto every chunk\n            },\n            pairedItem: { item: i } \n        });\n    }\n}\n\nreturn allChunks;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3104,
+        2416
+      ],
+      "id": "dba23774-9532-4133-8355-dc564f3924d0",
+      "name": "CODE FOR CHUNKING-EMPLOYEE(markdown)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto'); // <--- THIS LINE IS MANDATORY\n\n// 1. Get all input items\nconst items = $input.all();\nconst results = [];\n\n// 2. Loop through each item (We use a loop to handle the async helper)\nfor (let i = 0; i < items.length; i++) {\n  const item = items[i];\n  const binaryKey = 'data'; \n  //const binaryKey = 'fake_key_to_force_error';\n\n  try {\n    // Pull the real file from disk\n    const fileBuffer = await this.helpers.getBinaryDataBuffer(i, binaryKey);\n    \n    // 3. Generate the Content Hash\n    const hash = crypto.createHash('sha256').update(fileBuffer).digest('hex');\n\n    // 4. Generate the UUID for the Audit Log based on the filename\n    const nameHash = crypto.createHash('md5').update(item.json.fileName || \"\").digest('hex');\n    const fileUuid = `${nameHash.slice(0,8)}-${nameHash.slice(8,12)}-4${nameHash.slice(13,16)}-a${nameHash.slice(17,20)}-${nameHash.slice(20,32)}`;\n\n    results.push({\n      json: {\n        ...item.json,\n        file_hash: hash,\n        file_uuid: fileUuid,\n        file_size: fileBuffer.length \n      },\n      binary: item.binary\n    });\n    \n  } catch (error) {\n    results.push({\n      json: {\n        ...item.json,\n        error: \"Binary data not found or unreadable\",\n        file_hash: \"ERROR_\" + i,\n        file_uuid: \"ERROR_\" + i\n      },\n      binary: item.binary\n    });\n  }\n}\n\nreturn results;"
+      },
+      "id": "7ac72a93-5a2d-466d-942b-5a4f424e1ec1",
+      "name": "HASH GENERATOR",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -5984,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst hashArray = items.map(item => item.json.file_hash);\nconst nameArray = items.map(item => item.json.fileName); // <-- ADDED THIS\n\nreturn {\n  json: {\n    hash_array: hashArray.length > 0 ? hashArray : [\"0\"],\n    name_array: nameArray.length > 0 ? nameArray : [\"0\"] // <-- ADDED THIS\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -5760,
+        2064
+      ],
+      "id": "842d7d6f-e310-4ab8-9276-893abc9fe1e1",
+      "name": "QUERY FORMATTER"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:11434/api/embeddings",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "nomic-embed-text:v1.5"
+            },
+            {
+              "name": "prompt",
+              "value": "=search_document: {{$json.text}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2656,
+        1760
+      ],
+      "id": "62bb8c22-58bb-455d-a894-06666b3885ef",
+      "name": "EMBEDDINGS NODE"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:11434/api/embeddings",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "nomic-embed-text:v1.5"
+            },
+            {
+              "name": "prompt",
+              "value": "=search_document: {{$json.text}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2656,
+        1472
+      ],
+      "id": "d5746955-762a-47d1-94ca-e0c7ec0c8c29",
+      "name": "EMBEDDINGS NODE1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:11434/api/embeddings",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "nomic-embed-text:v1.5"
+            },
+            {
+              "name": "prompt",
+              "value": "=search_document: {{$json.text}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2656,
+        2048
+      ],
+      "id": "a3a3e496-02c1-43fe-8dd9-2bb973529a92",
+      "name": "EMBEDDINGS NODE2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:11434/api/embeddings",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "nomic-embed-text:v1.5"
+            },
+            {
+              "name": "prompt",
+              "value": "=search_document: {{$json.text}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2656,
+        2336
+      ],
+      "id": "63c3770b-f510-4223-84c1-7621108660ec",
+      "name": "EMBEDDINGS NODE3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "54c3ab77-2855-49f5-bd76-20152329e9bf",
+              "name": "security_level",
+              "value": "employee",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2432,
+        2336
+      ],
+      "id": "23310283-8688-4bf4-a799-ae0b126ee1b4",
+      "name": "SET FILE ACCESS CONTROL-EMPLOYEE"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "54c3ab77-2855-49f5-bd76-20152329e9bf",
+              "name": "security_level",
+              "value": "employee",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2432,
+        2048
+      ],
+      "id": "50b88652-adab-4073-933a-f958c28630fa",
+      "name": "SET FILE ACCESS CONTROL-EMPLOYEE1"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {
+          "keepSource": "json"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -4416,
+        1984
+      ],
+      "id": "ee976ed1-a3f8-414a-ad75-339ac9b41dce",
+      "name": "MOVE BINARY DATA"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -3328,
+        1552
+      ],
+      "id": "33454d3f-51bd-406a-aa23-045ad1c67a78",
+      "name": "VOLUNTEER FILE TEXT EXTRACTOR(PDF)",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const newFiles = $('HASH GENERATOR').all();\nconst qdrantResponse = $input.all()[0]?.json?.result?.points || [];\n\nreturn newFiles.map(file => {\n  const newHash = file.json.file_hash;\n  const fileName = file.json.fileName;\n  \n  const existingContent = qdrantResponse.find(p => p.payload.file_hash === newHash);\n  const existingName = qdrantResponse.find(p => p.payload.file_name === fileName);\n\n  let action = \"INSERT\";      \n  let targetHash = \"NEW_FILE\";      \n\n  if (existingContent) {\n      action = \"IGNORE\";\n  } else if (existingName) {\n      action = \"UPDATE\"; \n      targetHash = existingName.payload.file_hash;\n  }\n\n  if (file.json.error) action = \"ERROR\";\n\n  return { json: { ...file.json, action, target_hash: targetHash }, binary: file.binary };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -5312,
+        2064
+      ],
+      "id": "4a965b7e-e780-49d5-b90c-e8ca3599b6e5",
+      "name": "CHECK FILE STATUS"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "5320e2d0-8ec0-45da-bc64-22efa04c2969",
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "ERROR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "NOTIFY HR"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.action}}",
+                    "rightValue": "IGNORE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    },
+                    "id": "6262fb7e-fca4-43a3-be45-e796e667d458"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "FOR UPDATION AND DELETION"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "882b4cef-464e-4285-9317-904185da4108",
+                    "leftValue": "={{$json.action}}",
+                    "rightValue": "IGNORE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "STOP"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -5104,
+        2048
+      ],
+      "id": "da17cc8a-380d-4a35-a37a-7c3521b3d18e",
+      "name": "ACTION ROUTER"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -4864,
+        2208
+      ],
+      "id": "2c3a2bf1-178f-4931-9a3a-63e895a22807",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "useDataOfInput": 2
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -4640,
+        1984
+      ],
+      "id": "6bfc5278-03d5-42a0-84bd-b88cb8078b38",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $('MOVE BINARY DATA').all();\n\nfor (let i = 0; i < items.length; i++) {\n    // 1. Get the base64 string we saved earlier\n    const base64Data = items[i].json.data;\n    \n    // 2. Rebuild the binary file manually (safely!)\n    items[i].binary = {\n        data: {\n            data: base64Data,\n            mimeType: items[i].json.fileExtension === 'pdf' ? 'application/pdf' : 'text/markdown',\n            fileName: items[i].json.fileName\n        }\n    };\n    \n    // 3. Clean up the JSON by removing the giant text string\n    delete items[i].json.data;\n}\n\n// Return the perfect JSON alongside the newly rebuilt file\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3984,
+        1984
+      ],
+      "id": "46e91fec-2a9d-4ed4-8d07-de0144efcfaa",
+      "name": "DATA PARSER"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:6333/collections/app_rag_docs/points/scroll",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n  {\n    \"filter\": {\n      \"should\": [\n        {\n          \"key\": \"file_hash\",\n          \"match\": {\n            \"any\": $json.hash_array\n          }\n        },\n        {\n          \"key\": \"file_name\",\n          \"match\": {\n            \"any\": $json.name_array\n          }\n        }\n      ]\n    },\n    \"limit\": 1000,\n    \"with_payload\": true,\n    \"with_vector\": false\n  }\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -5536,
+        2064
+      ],
+      "id": "0e8a7459-6799-4c2f-bfbb-bcefcc2e8cda",
+      "name": "HASH RETRIEVER",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "http://localhost:6333/collections/app_rag_docs/points",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{\n  JSON.stringify({\n    \"points\": [\n      {\n        \"id\": Date.now() * 1000 + $itemIndex,\n        \"vector\": $json.embedding,\n        \"payload\": {\n          \"content\": $('Loop Over Items').item.json.text,\n          \"access_role\": $json.security_level,\n          \"file_name\": $('Loop Over Items').item.json.fileName,\n          \"file_hash\": $('Loop Over Items').item.json.file_hash\n        }\n      }\n    ]\n  })\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -2224,
+        1520
+      ],
+      "id": "096318e5-da54-47fc-9668-69ce0b295c77",
+      "name": "DB INSERTION(PDF)"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "mfSJM9mkRMFSLhhE",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/mfSJM9mkRMFSLhhE",
+          "cachedResultName": "KCS ERROR MANGEMENT FLOW(UNDER DEVELOPMENT)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -4560,
+        1792
+      ],
+      "id": "e5e8c2e4-378d-42bc-af37-a0d205912c3f",
+      "name": "ERROR HANDLER WORKFLOW"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "http://localhost:6333/collections/app_rag_file_registry/points",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n  {\n    \"points\": [\n      {\n        \"id\": $json.file_uuid,\n        \"vector\": [0.0],\n        \"payload\": {\n          \"file_name\": $json.fileName,\n          \"file_hash\": $json.file_hash,\n          \"last_action\": $json.action,\n          \"updated_at\": $now.toISO()\n        }\n      }\n    ]\n  }\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -4192,
+        1984
+      ],
+      "id": "273074d8-3e8a-44d1-a8c4-f92060e0a54d",
+      "name": "LOG ENTRY NODE"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "http://localhost:6333/collections/app_rag_docs/points",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{\n  JSON.stringify({\n    \"points\": [\n      {\n        \"id\": Date.now() * 1000 + $itemIndex,\n        \"vector\": $json.embedding,\n        \"payload\": {\n          \"content\": $('Loop Over Items3').item.json.text,\n          \"access_role\": $json.security_level,\n          \"file_name\": $('Loop Over Items3').item.json.fileName,\n          \"file_hash\": $('Loop Over Items3').item.json.file_hash\n        }\n      }\n    ]\n  })\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -2224,
+        2384
+      ],
+      "id": "d74d80da-315c-44b3-9051-ec9f677094be",
+      "name": "DB INSERTION(MARKDOWN)"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "http://localhost:6333/collections/app_rag_docs/points",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{\n  JSON.stringify({\n    \"points\": [\n      {\n        \"id\": Date.now() * 1000 + $itemIndex,\n        \"vector\": $json.embedding,\n        \"payload\": {\n          \"content\": $('Loop Over Items2').item.json.text,\n          \"access_role\": $json.security_level,\n          \"file_name\": $('Loop Over Items2').item.json.fileName,\n          \"file_hash\": $('Loop Over Items2').item.json.file_hash\n        }\n      }\n    ]\n  })\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -2224,
+        2112
+      ],
+      "id": "a25ccd87-1db7-4fb5-b4ad-49f0410a0bbf",
+      "name": "DB INSERTION PDF"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "http://localhost:6333/collections/app_rag_docs/points",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{\n  JSON.stringify({\n    \"points\": [\n      {\n        \"id\": Date.now() * 1000 + $itemIndex,\n        \"vector\": $json.embedding,\n        \"payload\": {\n          \"content\": $('Loop Over Items1').item.json.text,\n          \"access_role\": $json.security_level,\n          \"file_name\": $('Loop Over Items1').item.json.fileName,\n          \"file_hash\": $('Loop Over Items1').item.json.file_hash\n        }\n      }\n    ]\n  })\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -2224,
+        1840
+      ],
+      "id": "e77e00aa-8fe4-42f5-a1a8-e23f3f223e44",
+      "name": "DB INSERTION-MARKDOWN"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:6333/collections/app_rag_docs/points/delete",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"filter\": {\n    \"must\": [ { \"key\": \"file_hash\", \"match\": { \"value\": \"={{ $json.target_hash }}\" } } ]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -4864,
+        2000
+      ],
+      "id": "559ac939-5fee-4b9e-822b-c262d99e4e41",
+      "name": "DELETION OF EXISTING FILES(FOR REWRITTING WITH UPDATED INFO)"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1808,
+        1920
+      ],
+      "id": "05b2f4b7-0c4c-4f70-b953-44ba5967d120",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "0uqpZqwavsn1omqT",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/0uqpZqwavsn1omqT",
+          "cachedResultName": "BME TRIGGER"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -1616,
+        1952
+      ],
+      "id": "4d2414d5-5bb4-40e4-8751-cc6aa39bdd58",
+      "name": "Execute Workflow",
+      "executeOnce": true
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "EMPLOYEE FILES READER",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "VOLUNTEER FILES READER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "HASH GENERATOR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "VOLUNTEER FILE SEGREGATION",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "EMPLOYEE FILE SEGREGATION",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SET FILE ACCESS CONTROL-VOLUNTEER": {
+      "main": [
+        [
+          {
+            "node": "DB INSERTION(PDF)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "EMBEDDINGS NODE1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VOLUNTEER FILES READER": {
+      "main": [
+        [
+          {
+            "node": "VOLUNTEER TAGGING",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EMPLOYEE FILES READER": {
+      "main": [
+        [
+          {
+            "node": "EMPLOYEE TAGGER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VOLUNTEER TAGGING": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EMPLOYEE TAGGER": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 2
+          }
+        ],
+        [
+          {
+            "node": "EMBEDDINGS NODE2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EMPLOYEE FILE TEXT EXTRACTOR(PDF)": {
+      "main": [
+        [
+          {
+            "node": "CODE FOR CHUNKING-EMPLOYEE",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ERROR HANDLER WORKFLOW",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EMPLOYEE FILE TEXT EXTRACTOR(MARKDOWN)": {
+      "main": [
+        [
+          {
+            "node": "CODE FOR CHUNKING-EMPLOYEE(markdown)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ERROR HANDLER WORKFLOW",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CODE FOR CHUNKING-EMPLOYEE": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VOLUNTEER FILE SEGREGATION": {
+      "main": [
+        [
+          {
+            "node": "VOLUNTEER FILE TEXT EXTRACTOR(PDF)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "VOLUNTEER FILES EXTRACTOR(markdown)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items3": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 3
+          }
+        ],
+        [
+          {
+            "node": "EMBEDDINGS NODE3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SET FILE ACCESS CONTROL-VOLUNTEER3": {
+      "main": [
+        [
+          {
+            "node": "DB INSERTION-MARKDOWN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "EMBEDDINGS NODE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CODE FOR CHUNKING-VOLUNTEER(markdown)": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CODE FOR CHUNKING-VOLUNTEER(pdf)": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VOLUNTEER FILES EXTRACTOR(markdown)": {
+      "main": [
+        [
+          {
+            "node": "CODE FOR CHUNKING-VOLUNTEER(markdown)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ERROR HANDLER WORKFLOW",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EMPLOYEE FILE SEGREGATION": {
+      "main": [
+        [
+          {
+            "node": "EMPLOYEE FILE TEXT EXTRACTOR(PDF)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "EMPLOYEE FILE TEXT EXTRACTOR(MARKDOWN)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CODE FOR CHUNKING-EMPLOYEE(markdown)": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HASH GENERATOR": {
+      "main": [
+        [
+          {
+            "node": "QUERY FORMATTER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QUERY FORMATTER": {
+      "main": [
+        [
+          {
+            "node": "HASH RETRIEVER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EMBEDDINGS NODE": {
+      "main": [
+        [
+          {
+            "node": "SET FILE ACCESS CONTROL-VOLUNTEER3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EMBEDDINGS NODE1": {
+      "main": [
+        [
+          {
+            "node": "SET FILE ACCESS CONTROL-VOLUNTEER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EMBEDDINGS NODE2": {
+      "main": [
+        [
+          {
+            "node": "SET FILE ACCESS CONTROL-EMPLOYEE1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EMBEDDINGS NODE3": {
+      "main": [
+        [
+          {
+            "node": "SET FILE ACCESS CONTROL-EMPLOYEE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SET FILE ACCESS CONTROL-EMPLOYEE": {
+      "main": [
+        [
+          {
+            "node": "DB INSERTION(MARKDOWN)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SET FILE ACCESS CONTROL-EMPLOYEE1": {
+      "main": [
+        [
+          {
+            "node": "DB INSERTION PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MOVE BINARY DATA": {
+      "main": [
+        [
+          {
+            "node": "LOG ENTRY NODE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VOLUNTEER FILE TEXT EXTRACTOR(PDF)": {
+      "main": [
+        [
+          {
+            "node": "CODE FOR CHUNKING-VOLUNTEER(pdf)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ERROR HANDLER WORKFLOW",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CHECK FILE STATUS": {
+      "main": [
+        [
+          {
+            "node": "ACTION ROUTER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ACTION ROUTER": {
+      "main": [
+        [
+          {
+            "node": "ERROR HANDLER WORKFLOW",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "DELETION OF EXISTING FILES(FOR REWRITTING WITH UPDATED INFO)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "MOVE BINARY DATA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DATA PARSER": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HASH RETRIEVER": {
+      "main": [
+        [
+          {
+            "node": "CHECK FILE STATUS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB INSERTION(PDF)": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LOG ENTRY NODE": {
+      "main": [
+        [
+          {
+            "node": "DATA PARSER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB INSERTION(MARKDOWN)": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB INSERTION PDF": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DB INSERTION-MARKDOWN": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DELETION OF EXISTING FILES(FOR REWRITTING WITH UPDATED INFO)": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9fbca758ae00ac6023e7e6cc28587d5e73e94aa33801e34908dbb8d2c733d8a0"
+  }
+}

@@ -8,8 +8,10 @@ tiktoken
 # --- Vector Database ---
 qdrant-client
 
-# --- UI & Memory ---
-gradio
+# --- Backend API & Memory ---
+fastapi
+uvicorn
+pydantic
 sqlite-vec
 sentence-transformers
 

@@ -1,7 +1,14 @@
+# Environments
 venv/
 __pycache__/
-qdrant-storage/
-chat_memory.sqlite
-out.txt
+
+# Security / Secrets
 .env
+
+# Databases & Memory Storage
+chat_memory.sqlite
+session_summaries/
+qdrant-storage/
+
+# OS / System Files
 .DS_Store

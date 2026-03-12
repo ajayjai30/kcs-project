@@ -1,0 +1,16 @@
+# Use a lightweight Python image
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install only what the reindexer needs
+RUN pip install --no-cache-dir flask qdrant-client fastembed gunicorn
+
+# Copy the background script
+COPY reindex_bm25.py .
+
+# Expose the internal port
+EXPOSE 5000
+
+# Run with Gunicorn for production stability
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "reindex_bm25:app"]
