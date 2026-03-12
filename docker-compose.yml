@@ -44,7 +44,7 @@ services:
     depends_on:
       - qdrant
 
-  # 4. The Main RAG App (LangGraph / Agent)
+  # 4. The Main RAG App
   rag-app:
     build:
       context: .
@@ -52,12 +52,10 @@ services:
     container_name: kcs_rag_app
     restart: unless-stopped
     ports:
-      - "7860:7860" # Gradio Default Port
-    environment:
-      - NVIDIA_API_KEY=${NVIDIA_API_KEY}
+      - "7860:7860"
     volumes:
-      # Persist the SQL database and Markdown summaries to the host machine
-      - chat_memory_data:/app/chat_memory.sqlite 
+      # Use local bind mounts so the pipeline can see the files
+      - ./chat_memory.sqlite:/app/chat_memory.sqlite 
       - ./session_summaries:/app/session_summaries
     networks:
       - rag_network
