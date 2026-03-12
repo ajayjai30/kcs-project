@@ -1,5 +1,6 @@
 import uuid
 import threading
+import os
 import micro_rag_memory
 
 # FastAPI Imports
